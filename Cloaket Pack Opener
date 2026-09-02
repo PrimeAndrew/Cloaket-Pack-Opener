@@ -1,0 +1,1020 @@
+(async () => {
+  const PACKS = [
+    "Tech",
+    "Medieval",
+    "Fast Food",
+    "Breakfast",
+    "Wonderland",
+    "Autumn",
+    "Spooky",
+    "Space",
+    "Bot",
+    "Aquatic",
+    "Bug",
+    "Safari"
+  ];
+
+  // FIXED DELAY
+  const DELAY = 125;
+
+  const PACK_COST = 25;
+
+  document.getElementById("cloaket-opener")?.remove();
+  document.getElementById("cloaket-opener-style")?.remove();
+
+  const panel = document.createElement("div");
+  panel.id = "cloaket-opener";
+
+  panel.innerHTML = `
+    <div class="co-header">
+      <div class="co-title">CLOAKET OPENER</div>
+      <button id="co-close">×</button>
+    </div>
+
+    <div class="co-controls">
+      <label>Pack</label>
+
+      <select id="co-pack">
+        ${PACKS.map(pack =>
+          `<option value="${pack}">${pack} Pack</option>`
+        ).join("")}
+      </select>
+
+      <label>Amount</label>
+
+      <input
+        id="co-amount"
+        type="number"
+        min="1"
+        value="10"
+      >
+
+      <button id="co-start">
+        OPEN PACKS
+      </button>
+    </div>
+
+    <div class="co-stats">
+      <div>
+        <span>Packs</span>
+        <b id="co-opened">0</b>
+      </div>
+
+      <div>
+        <span>Tokens Spent</span>
+        <b id="co-tokens">0</b>
+      </div>
+
+      <div>
+        <span>Status</span>
+        <b id="co-status">Ready</b>
+      </div>
+    </div>
+
+    <div class="co-results" id="co-results">
+      <div class="co-empty">
+        Your Blooks will appear here...
+      </div>
+    </div>
+  `;
+
+  const style = document.createElement("style");
+  style.id = "cloaket-opener-style";
+
+  style.textContent = `
+    @keyframes coRainbow {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes coBorder {
+      0% {
+        border-color: #ff0000;
+      }
+
+      16% {
+        border-color: #ff8000;
+      }
+
+      33% {
+        border-color: #ffff00;
+      }
+
+      50% {
+        border-color: #00ff00;
+      }
+
+      66% {
+        border-color: #00ffff;
+      }
+
+      83% {
+        border-color: #8000ff;
+      }
+
+      100% {
+        border-color: #ff0000;
+      }
+    }
+
+    @keyframes coGlow {
+      0% {
+        text-shadow: 0 0 8px #ff0000;
+      }
+
+      20% {
+        text-shadow: 0 0 8px #ffff00;
+      }
+
+      40% {
+        text-shadow: 0 0 8px #00ff00;
+      }
+
+      60% {
+        text-shadow: 0 0 8px #00ffff;
+      }
+
+      80% {
+        text-shadow: 0 0 8px #8000ff;
+      }
+
+      100% {
+        text-shadow: 0 0 8px #ff0000;
+      }
+    }
+
+    #cloaket-opener {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      width: 520px;
+      max-height: 720px;
+
+      background: #151725;
+      color: white;
+
+      border: 3px solid #ff0000;
+      border-radius: 18px;
+
+      animation:
+        coBorder 5s linear infinite;
+
+      box-shadow:
+        0 20px 70px rgba(0,0,0,.65),
+        0 0 35px rgba(255,0,255,.25);
+
+      z-index: 999999999;
+
+      font-family: Arial, sans-serif;
+
+      overflow: hidden;
+    }
+
+    #cloaket-opener * {
+      box-sizing: border-box;
+    }
+
+    .co-header {
+      height: 70px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 20px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff0000,
+          #ff8000,
+          #ffff00,
+          #00ff00,
+          #00ffff,
+          #0080ff,
+          #8000ff,
+          #ff00ff,
+          #ff0000
+        );
+
+      background-size: 400% 100%;
+
+      animation:
+        coRainbow 5s linear infinite;
+    }
+
+    .co-title {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: 1px;
+
+      animation:
+        coGlow 5s linear infinite;
+    }
+
+    #co-close {
+      border: 0;
+
+      background:
+        rgba(255,255,255,.18);
+
+      color: white;
+
+      font-size: 27px;
+
+      width: 38px;
+      height: 38px;
+
+      border-radius: 10px;
+
+      cursor: pointer;
+    }
+
+    #co-close:hover {
+      background:
+        rgba(255,255,255,.35);
+    }
+
+    .co-controls {
+      padding: 18px;
+
+      display: grid;
+
+      gap: 8px;
+    }
+
+    .co-controls label {
+      color: #aeb4c9;
+
+      font-size: 13px;
+
+      font-weight: 700;
+
+      margin-top: 4px;
+    }
+
+    .co-controls select,
+    .co-controls input {
+      width: 100%;
+
+      border:
+        1px solid #30354b;
+
+      background: #202438;
+
+      color: white;
+
+      border-radius: 9px;
+
+      padding: 12px;
+
+      outline: none;
+
+      font-size: 14px;
+    }
+
+    #co-start {
+      margin-top: 8px;
+
+      border: 0;
+
+      padding: 14px;
+
+      border-radius: 10px;
+
+      color: white;
+
+      font-weight: 900;
+
+      font-size: 15px;
+
+      cursor: pointer;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff0000,
+          #ff8000,
+          #ffff00,
+          #00ff00,
+          #00ffff,
+          #0080ff,
+          #8000ff,
+          #ff00ff,
+          #ff0000
+        );
+
+      background-size: 400% 100%;
+
+      animation:
+        coRainbow 5s linear infinite;
+    }
+
+    #co-start:hover {
+      filter: brightness(1.2);
+    }
+
+    #co-start:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .co-stats {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 8px;
+
+      padding:
+        0 18px 15px;
+    }
+
+    .co-stats div {
+      background: #202438;
+
+      border-radius: 10px;
+
+      padding: 11px;
+
+      text-align: center;
+    }
+
+    .co-stats span {
+      display: block;
+
+      color: #9299b2;
+
+      font-size: 11px;
+
+      margin-bottom: 4px;
+    }
+
+    .co-stats b {
+      font-size: 15px;
+    }
+
+    #co-results {
+      margin:
+        0 18px 18px;
+
+      padding: 10px;
+
+      height: 300px;
+
+      overflow-y: auto;
+
+      background: #10121e;
+
+      border-radius: 12px;
+
+      border:
+        1px solid #292e43;
+    }
+
+    .co-empty {
+      color: #777e96;
+
+      text-align: center;
+
+      padding: 100px 10px;
+
+      font-size: 13px;
+    }
+
+    .co-result {
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      padding: 12px;
+
+      margin-bottom: 7px;
+
+      background: #1c2030;
+
+      border-radius: 9px;
+
+      border-left:
+        4px solid #00ffff;
+    }
+
+    .co-result.mystical {
+      border-left-color:
+        #ff00ff;
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,0,255,.25),
+          #1c2030
+        );
+
+      box-shadow:
+        0 0 15px
+        rgba(255,0,255,.3);
+    }
+
+    .co-name {
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .co-rarity {
+      font-size: 12px;
+
+      color: #aeb4c9;
+
+      margin-top: 3px;
+    }
+
+    .co-count {
+      font-size: 15px;
+
+      font-weight: 900;
+
+      color: white;
+
+      background: #30364d;
+
+      padding:
+        6px 10px;
+
+      border-radius: 8px;
+
+      min-width: 42px;
+
+      text-align: center;
+    }
+
+    .co-mystical-banner {
+      padding: 14px;
+
+      margin-bottom: 8px;
+
+      text-align: center;
+
+      border-radius: 10px;
+
+      background:
+        linear-gradient(
+          90deg,
+          #ff0000,
+          #ff8000,
+          #ffff00,
+          #00ff00,
+          #00ffff,
+          #0080ff,
+          #8000ff,
+          #ff00ff
+        );
+
+      background-size: 400% 100%;
+
+      animation:
+        coRainbow 3s linear infinite;
+
+      color: white;
+
+      font-weight: 900;
+
+      font-size: 16px;
+
+      box-shadow:
+        0 0 20px
+        rgba(255,0,255,.45);
+    }
+
+    .co-rate-limit {
+      padding: 12px;
+
+      margin-bottom: 8px;
+
+      border-radius: 9px;
+
+      background: #2b2430;
+
+      color: #ffd166;
+
+      text-align: center;
+
+      font-weight: 700;
+
+      font-size: 13px;
+    }
+  `;
+
+  document.head.appendChild(style);
+  document.body.appendChild(panel);
+
+  const $ = id =>
+    document.getElementById(id);
+
+  // ==============================
+  // CLOSE
+  // ==============================
+
+  $("co-close").onclick = () => {
+    panel.remove();
+    style.remove();
+  };
+
+  // ==============================
+  // FIND DATA
+  // ==============================
+
+  function findDeep(obj, keys) {
+    if (
+      !obj ||
+      typeof obj !== "object"
+    ) {
+      return null;
+    }
+
+    for (const key of keys) {
+      if (
+        Object.prototype
+          .hasOwnProperty
+          .call(obj, key) &&
+        obj[key] !== null &&
+        obj[key] !== undefined
+      ) {
+        return obj[key];
+      }
+    }
+
+    for (
+      const value
+      of Object.values(obj)
+    ) {
+      if (
+        value &&
+        typeof value === "object"
+      ) {
+        const found =
+          findDeep(value, keys);
+
+        if (
+          found !== null
+        ) {
+          return found;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  // ==============================
+  // BLOOK NAME
+  // ==============================
+
+  function getBlookName(data) {
+    const value =
+      findDeep(data, [
+        "blookName",
+        "blook",
+        "name",
+        "itemName",
+        "item",
+        "character",
+        "displayName",
+        "result"
+      ]);
+
+    if (
+      typeof value === "string"
+    ) {
+      return value;
+    }
+
+    if (
+      value &&
+      typeof value === "object"
+    ) {
+      const nested =
+        findDeep(value, [
+          "name",
+          "blookName",
+          "displayName"
+        ]);
+
+      if (nested) {
+        return String(nested);
+      }
+    }
+
+    return "Unknown Blook";
+  }
+
+  // ==============================
+  // RARITY
+  // ==============================
+
+  function getRarity(data) {
+    const value =
+      findDeep(data, [
+        "rarity",
+        "rarityName",
+        "tier"
+      ]);
+
+    return value
+      ? String(value)
+      : "Unknown";
+  }
+
+  // ==============================
+  // MYSTICAL
+  // ==============================
+
+  function isMystical(
+    data,
+    rarity,
+    name
+  ) {
+    return (
+      String(rarity)
+        .toLowerCase()
+        .includes("mystical") ||
+
+      String(name)
+        .toLowerCase()
+        .includes("mystical") ||
+
+      JSON.stringify(data)
+        .toLowerCase()
+        .includes("mystical")
+    );
+  }
+
+  // ==============================
+  // START
+  // ==============================
+
+  $("co-start").onclick =
+    async () => {
+
+      const pack =
+        $("co-pack").value;
+
+      const amount =
+        Number(
+          $("co-amount").value
+        );
+
+      if (
+        !Number.isInteger(amount) ||
+        amount < 1
+      ) {
+        $("co-status")
+          .textContent =
+          "Invalid amount";
+
+        return;
+      }
+
+      $("co-start")
+        .disabled = true;
+
+      $("co-results")
+        .innerHTML = "";
+
+      $("co-opened")
+        .textContent = "0";
+
+      $("co-tokens")
+        .textContent = "0";
+
+      let opened = 0;
+      let tokens = 0;
+      let mysticalFound = false;
+
+      const counts = {};
+      const resultElements = {};
+
+      const sleep = ms =>
+        new Promise(resolve =>
+          setTimeout(
+            resolve,
+            ms
+          )
+        );
+
+      $("co-status")
+        .textContent =
+        "Opening...";
+
+      // ==============================
+      // OPEN LOOP
+      // ==============================
+
+      for (
+        let i = 0;
+        i < amount;
+        i++
+      ) {
+
+        try {
+
+          const url =
+            `/api/packs/${
+              encodeURIComponent(pack)
+            }/open`;
+
+          const response =
+            await fetch(
+              url,
+              {
+                method: "POST",
+                credentials: "include"
+              }
+            );
+
+          // ==========================
+          // RATE LIMIT
+          // ==========================
+
+          if (
+            response.status === 429
+          ) {
+
+            $("co-status")
+              .textContent =
+              "Rate limited — waiting...";
+
+            if (
+              !document.querySelector(
+                ".co-rate-limit"
+              )
+            ) {
+
+              const banner =
+                document.createElement(
+                  "div"
+                );
+
+              banner.className =
+                "co-rate-limit";
+
+              banner.textContent =
+                "⏳ Server rate limit — waiting before continuing...";
+
+              $("co-results")
+                .prepend(banner);
+            }
+
+            await sleep(1000);
+
+            i--;
+
+            continue;
+          }
+
+          const text =
+            await response.text();
+
+          let data;
+
+          try {
+            data =
+              JSON.parse(text);
+          } catch {
+            data = text;
+          }
+
+          if (!response.ok) {
+
+            $("co-status")
+              .textContent =
+              `Error ${response.status}`;
+
+            break;
+          }
+
+          // ==========================
+          // SUCCESS
+          // ==========================
+
+          opened++;
+          tokens += PACK_COST;
+
+          const name =
+            getBlookName(data);
+
+          const rarity =
+            getRarity(data);
+
+          const mystical =
+            isMystical(
+              data,
+              rarity,
+              name
+            );
+
+          counts[name] =
+            (counts[name] || 0) + 1;
+
+          $("co-opened")
+            .textContent =
+            opened;
+
+          $("co-tokens")
+            .textContent =
+            tokens;
+
+          document
+            .querySelector(
+              ".co-rate-limit"
+            )
+            ?.remove();
+
+          // ==========================
+          // GROUP DUPLICATES
+          // ==========================
+
+          if (
+            resultElements[name]
+          ) {
+
+            const countElement =
+              resultElements[name]
+                .querySelector(
+                  ".co-count"
+                );
+
+            countElement.textContent =
+              `${counts[name]}x`;
+
+          } else {
+
+            const empty =
+              $("co-results")
+                .querySelector(
+                  ".co-empty"
+                );
+
+            if (empty) {
+              empty.remove();
+            }
+
+            const result =
+              document.createElement(
+                "div"
+              );
+
+            result.className =
+              "co-result" +
+              (
+                mystical
+                  ? " mystical"
+                  : ""
+              );
+
+            const info =
+              document.createElement(
+                "div"
+              );
+
+            const nameElement =
+              document.createElement(
+                "div"
+              );
+
+            nameElement.className =
+              "co-name";
+
+            nameElement.textContent =
+              name;
+
+            const rarityElement =
+              document.createElement(
+                "div"
+              );
+
+            rarityElement.className =
+              "co-rarity";
+
+            rarityElement.textContent =
+              rarity;
+
+            info.appendChild(
+              nameElement
+            );
+
+            info.appendChild(
+              rarityElement
+            );
+
+            const countElement =
+              document.createElement(
+                "div"
+              );
+
+            countElement.className =
+              "co-count";
+
+            countElement.textContent =
+              "1x";
+
+            result.appendChild(
+              info
+            );
+
+            result.appendChild(
+              countElement
+            );
+
+            $("co-results")
+              .prepend(result);
+
+            resultElements[name] =
+              result;
+          }
+
+          // ==========================
+          // MYSTICAL STOP
+          // ==========================
+
+          if (mystical) {
+
+            mysticalFound = true;
+
+            $("co-status")
+              .textContent =
+              "✨ MYSTICAL FOUND!";
+
+            const banner =
+              document.createElement(
+                "div"
+              );
+
+            banner.className =
+              "co-mystical-banner";
+
+            banner.textContent =
+              "✨ MYSTICAL FOUND — STOPPED ✨";
+
+            $("co-results")
+              .prepend(banner);
+
+            break;
+          }
+
+          // ==========================
+          // FIXED 125MS
+          // ==========================
+
+          if (
+            i < amount - 1
+          ) {
+            await sleep(DELAY);
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Cloaket opener error:",
+            error
+          );
+
+          $("co-status")
+            .textContent =
+            "Request error";
+
+          break;
+        }
+      }
+
+      // ==============================
+      // FINAL STATUS
+      // ==============================
+
+      if (!mysticalFound) {
+
+        $("co-status")
+          .textContent =
+          opened >= amount
+            ? "Finished"
+            : "Stopped";
+      }
+
+      $("co-start")
+        .disabled = false;
+    };
+
+})();
