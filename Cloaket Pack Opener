@@ -15,7 +15,7 @@
   ];
 
   // FIXED DELAY
-  const DELAY = 500;
+  const DELAY = 450;
 
   const PACK_COST = 25;
 
